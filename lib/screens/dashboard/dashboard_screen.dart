@@ -1,8 +1,25 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
 
-class DashboardScreen extends StatelessWidget {
+import '../../theme/app_theme.dart';
+import 'widgets/balance_card.dart';
+import 'widgets/dashboard_bar.dart';
+import 'widgets/quick_action.dart';
+import 'widgets/transaction_tile.dart';
+
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  static const List<String> _cashFlowRanges = [
+    'Last 7 Days',
+    'Last 30 Days',
+    'Last 3 Month',
+  ];
+  String _selectedCashFlowRange = 'Last 7 Days';
 
   @override
   Widget build(BuildContext context) {
@@ -87,92 +104,27 @@ class DashboardScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF1D5FEA), Color(0xFF2F67DD)],
-                  ),
-                  borderRadius: BorderRadius.circular(34),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x331A56DB),
-                      blurRadius: 24,
-                      offset: Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Total Balance',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      '\$124,580.00',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 52 / 2,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    const Text(
-                      'INCOME THIS MONTH',
-                      style: TextStyle(
-                        color: Color(0xFFE5EEFF),
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16 / 2,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        const Text(
-                          '+\$12,840.00',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 113, 235, 14),
-                            fontSize: 42 / 2,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const Spacer(),
-                        _cardDot(opacity: 0.26),
-                        const SizedBox(width: 5),
-                        _cardDot(opacity: 0.38),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              const BalanceCard(),
               const SizedBox(height: 24),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  _QuickAction(
+                  QuickAction(
                     icon: Icons.send_rounded,
                     iconColor: AppTheme.primaryBlue,
                     label: 'Send',
                   ),
-                  _QuickAction(
+                  QuickAction(
                     icon: Icons.request_page_rounded,
                     iconColor: Color(0xFF059669),
                     label: 'Request',
                   ),
-                  _QuickAction(
+                  QuickAction(
                     icon: Icons.history_rounded,
                     iconColor: Color(0xFFF59E0B),
                     label: 'History',
                   ),
-                  _QuickAction(
+                  QuickAction(
                     icon: Icons.more_horiz_rounded,
                     iconColor: Color(0xFF475569),
                     label: 'More',
@@ -181,7 +133,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 34),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Cash Flow',
                     style: TextStyle(
@@ -190,19 +142,34 @@ class DashboardScreen extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  Spacer(),
-                  Text(
-                    'Last 7 Days',
-                    style: TextStyle(
-                      color: Color(0xFF94A3B8),
-                      fontSize: 16 / 2,
-                      fontWeight: FontWeight.w700,
+                  const Spacer(),
+                  DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedCashFlowRange,
+                      style: const TextStyle(
+                        color: Color(0xFF94A3B8),
+                        fontSize: 16 / 2,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Color(0xFF64748B),
+                      ),
+                      items: _cashFlowRanges
+                          .map(
+                            (range) => DropdownMenuItem<String>(
+                              value: range,
+                              child: Text(range),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setState(() {
+                          _selectedCashFlowRange = value;
+                        });
+                      },
                     ),
-                  ),
-                  SizedBox(width: 4),
-                  Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFF64748B),
                   ),
                 ],
               ),
@@ -223,13 +190,13 @@ class DashboardScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _Bar(height: 84, color: Color(0xFFB7C7E8)),
-                    _Bar(height: 124, color: Color(0xFF90A9DB)),
-                    _Bar(height: 178, color: Color(0xFF1F5ADB)),
-                    _Bar(height: 104, color: Color(0xFFAABCE3)),
-                    _Bar(height: 148, color: Color(0xFF7D9FDD)),
-                    _Bar(height: 196, color: Color(0xFF1F5ADB)),
-                    _Bar(height: 94, color: Color(0xFFC2D0EA)),
+                    DashboardBar(height: 84, color: Color(0xFFB7C7E8)),
+                    DashboardBar(height: 124, color: Color(0xFF90A9DB)),
+                    DashboardBar(height: 178, color: Color(0xFF1F5ADB)),
+                    DashboardBar(height: 104, color: Color(0xFFAABCE3)),
+                    DashboardBar(height: 148, color: Color(0xFF7D9FDD)),
+                    DashboardBar(height: 196, color: Color(0xFF1F5ADB)),
+                    DashboardBar(height: 94, color: Color(0xFFC2D0EA)),
                   ],
                 ),
               ),
@@ -255,7 +222,7 @@ class DashboardScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 14),
-              const _TransactionTile(
+              const TransactionTile(
                 icon: Icons.work_outline_rounded,
                 iconBg: Color(0xFFE2E8F0),
                 title: 'Office Supplies',
@@ -264,7 +231,7 @@ class DashboardScreen extends StatelessWidget {
                 amountColor: AppTheme.textDark,
               ),
               const SizedBox(height: 14),
-              const _TransactionTile(
+              const TransactionTile(
                 icon: Icons.call_made_rounded,
                 iconBg: Color(0xFFDFF3EA),
                 iconColor: Color(0xFF059669),
@@ -276,152 +243,6 @@ class DashboardScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  static Widget _cardDot({required double opacity}) {
-    return Container(
-      width: 46,
-      height: 46,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: opacity),
-        shape: BoxShape.circle,
-      ),
-    );
-  }
-}
-
-class _QuickAction extends StatelessWidget {
-  const _QuickAction({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-  });
-
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 70,
-          height: 70,
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 234, 245, 255),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Icon(icon, color: iconColor, size: 28),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xFF64748B),
-            fontWeight: FontWeight.w600,
-            fontSize: 32 / 2,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _Bar extends StatelessWidget {
-  const _Bar({required this.height, required this.color});
-
-  final double height;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 42,
-      height: height,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(12),
-      ),
-    );
-  }
-}
-
-class _TransactionTile extends StatelessWidget {
-  const _TransactionTile({
-    required this.icon,
-    required this.iconBg,
-    required this.title,
-    required this.dateTime,
-    required this.amount,
-    required this.amountColor,
-    this.iconColor = const Color(0xFF475569),
-  });
-
-  final IconData icon;
-  final Color iconBg;
-  final Color iconColor;
-  final String title;
-  final String dateTime;
-  final String amount;
-  final Color amountColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFD7DEE8)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 76,
-            height: 76,
-            decoration: BoxDecoration(
-              color: iconBg,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Icon(icon, color: iconColor, size: 34),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    color: AppTheme.textDark,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 40 / 2,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  dateTime,
-                  style: const TextStyle(
-                    color: Color(0xFF64748B),
-                    fontSize: 32 / 2,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Text(
-            amount,
-            style: TextStyle(
-              color: amountColor,
-              fontWeight: FontWeight.w700,
-              fontSize: 22,
-            ),
-          ),
-        ],
       ),
     );
   }
