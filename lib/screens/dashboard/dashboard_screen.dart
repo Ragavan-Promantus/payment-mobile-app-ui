@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
 import 'widgets/balance_card.dart';
-import 'widgets/dashboard_bar.dart';
+import 'widgets/cash_flow_line_graph.dart';
 import 'widgets/quick_action.dart';
 import 'widgets/transaction_tile.dart';
 
@@ -14,15 +14,35 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  static const List<double> _cashFlowValues = [84, 124, 178, 104, 148, 196, 94];
   static const List<String> _cashFlowRanges = [
     'Last 7 Days',
     'Last 30 Days',
     'Last 3 Month',
   ];
+
   String _selectedCashFlowRange = 'Last 7 Days';
+
+  List<CashFlowPoint> _buildCashFlowPoints() {
+    final DateTime now = DateTime.now();
+    final int stepDays = switch (_selectedCashFlowRange) {
+      'Last 30 Days' => 5,
+      'Last 3 Month' => 15,
+      _ => 1,
+    };
+
+    return List.generate(_cashFlowValues.length, (index) {
+      final date = now.subtract(
+        Duration(days: stepDays * (_cashFlowValues.length - 1 - index)),
+      );
+      return CashFlowPoint(value: _cashFlowValues[index], date: date);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final cashFlowPoints = _buildCashFlowPoints();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFC),
       floatingActionButton: FloatingActionButton(
@@ -143,62 +163,47 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   const Spacer(),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: _selectedCashFlowRange,
-                      style: const TextStyle(
-                        color: Color(0xFF94A3B8),
-                        fontSize: 16 / 2,
-                        fontWeight: FontWeight.w700,
-                      ),
-                      icon: const Icon(
-                        Icons.keyboard_arrow_down_rounded,
-                        color: Color(0xFF64748B),
-                      ),
-                      items: _cashFlowRanges
-                          .map(
-                            (range) => DropdownMenuItem<String>(
-                              value: range,
-                              child: Text(range),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          _selectedCashFlowRange = value;
-                        });
-                      },
-                    ),
-                  ),
+                  // DropdownButtonHideUnderline(
+                  //   child: DropdownButton<String>(
+                  //     value: _selectedCashFlowRange,
+                  //     style: const TextStyle(
+                  //       color: Color(0xFF94A3B8),
+                  //       fontSize: 16 / 2,
+                  //       fontWeight: FontWeight.w700,
+                  //     ),
+                  //     icon: const Icon(
+                  //       Icons.keyboard_arrow_down_rounded,
+                  //       color: Color(0xFF64748B),
+                  //     ),
+                  //     items: _cashFlowRanges
+                  //         .map(
+                  //           (range) => DropdownMenuItem<String>(
+                  //             value: range,
+                  //             child: Text(range),
+                  //           ),
+                  //         )
+                  //         .toList(),
+                  //     onChanged: (value) {
+                  //       if (value == null) return;
+                  //       setState(() {
+                  //         _selectedCashFlowRange = value;
+                  //       });
+                  //     },
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 14),
               Container(
-                height: 200,
+                height: 240,
                 width: double.infinity,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 14,
-                ),
+                padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF1F5F9),
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(color: const Color(0xFFE2E8F0)),
                 ),
-                child: const Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    DashboardBar(height: 84, color: Color(0xFFB7C7E8)),
-                    DashboardBar(height: 124, color: Color(0xFF90A9DB)),
-                    DashboardBar(height: 178, color: Color(0xFF1F5ADB)),
-                    DashboardBar(height: 104, color: Color(0xFFAABCE3)),
-                    DashboardBar(height: 148, color: Color(0xFF7D9FDD)),
-                    DashboardBar(height: 196, color: Color(0xFF1F5ADB)),
-                    DashboardBar(height: 94, color: Color(0xFFC2D0EA)),
-                  ],
-                ),
+                child: CashFlowLineGraph(points: cashFlowPoints),
               ),
               const SizedBox(height: 30),
               Row(
