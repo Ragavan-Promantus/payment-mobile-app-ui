@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
+import '../payments/payments_screen.dart';
 import '../settings/settings_screen.dart';
 import 'widgets/balance_card.dart';
 import 'widgets/cash_flow_line_graph.dart';
@@ -58,7 +59,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
         unselectedItemColor: const Color(0xFF94A3B8),
         showUnselectedLabels: true,
         onTap: (index) {
-          if (index == 3) {
+          if (index == 2) {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const PaymentsScreen()));
+          } else if (index == 3) {
             Navigator.of(
               context,
             ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
