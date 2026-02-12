@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
+import '../settings/settings_screen.dart';
 import 'widgets/balance_card.dart';
 import 'widgets/cash_flow_line_graph.dart';
 import 'widgets/quick_action.dart';
@@ -56,6 +57,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
         selectedItemColor: AppTheme.primaryBlue,
         unselectedItemColor: const Color(0xFF94A3B8),
         showUnselectedLabels: true,
+        onTap: (index) {
+          if (index == 3) {
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
+          }
+        },
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.grid_view_rounded),
@@ -109,16 +117,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    height: 50,
-                    width: 50,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE7EFFC),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.person_rounded,
-                      color: AppTheme.primaryBlue,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => const SettingsScreen(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFE7EFFC),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.person_rounded,
+                        color: AppTheme.primaryBlue,
+                      ),
                     ),
                   ),
                 ],
