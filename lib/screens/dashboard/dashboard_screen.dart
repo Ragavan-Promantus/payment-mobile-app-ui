@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/app_theme.dart';
+import '../invoices/invoice_screen.dart';
 import '../payments/payments_screen.dart';
 import '../settings/settings_screen.dart';
 import 'widgets/balance_card.dart';
@@ -84,7 +85,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ],
       ),
-      body: _currentTabIndex == 2
+      body: _currentTabIndex == 1
+          ? const InvoiceContent()
+          : _currentTabIndex == 2
           ? const PaymentsContent()
           : _buildDashboardContent(cashFlowPoints),
     );
