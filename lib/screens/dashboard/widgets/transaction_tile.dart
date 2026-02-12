@@ -33,13 +33,13 @@ class TransactionTile extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 76,
-            height: 76,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: iconBg,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: iconColor, size: 34),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -51,7 +51,7 @@ class TransactionTile extends StatelessWidget {
                   style: const TextStyle(
                     color: AppTheme.textDark,
                     fontWeight: FontWeight.w700,
-                    fontSize: 40 / 2,
+                    fontSize: 30 / 2,
                   ),
                 ),
                 const SizedBox(height: 3),
@@ -59,7 +59,7 @@ class TransactionTile extends StatelessWidget {
                   dateTime,
                   style: const TextStyle(
                     color: Color(0xFF64748B),
-                    fontSize: 32 / 2,
+                    fontSize: 25 / 2,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -71,7 +71,7 @@ class TransactionTile extends StatelessWidget {
             style: TextStyle(
               color: amountColor,
               fontWeight: FontWeight.w700,
-              fontSize: 22,
+              fontSize: 18,
             ),
           ),
         ],
