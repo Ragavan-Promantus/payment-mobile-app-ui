@@ -13,7 +13,7 @@ class BenePayApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'BenePay',
+      title: 'Payments',
       theme: AppTheme.lightTheme,
       home: const LoginScreen(),
     );
