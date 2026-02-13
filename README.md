@@ -1,4 +1,4 @@
-# benepay
+# payments
 
 A new Flutter project.
 

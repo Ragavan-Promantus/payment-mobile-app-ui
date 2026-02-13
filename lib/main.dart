@@ -3,11 +3,11 @@ import 'screens/login/login_screen.dart';
 import 'theme/app_theme.dart';
 
 void main() {
-  runApp(const BenePayApp());
+  runApp(const PaymentsApp());
 }
 
-class BenePayApp extends StatelessWidget {
-  const BenePayApp({super.key});
+class PaymentsApp extends StatelessWidget {
+  const PaymentsApp({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -57,9 +57,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         showUnselectedLabels: true,
         onTap: (index) {
           if (index == 3) {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SettingsScreen()),
-            );
+            Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
             return;
           }
           setState(() {
